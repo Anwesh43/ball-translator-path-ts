@@ -3,7 +3,7 @@ const h : number = window.innerHeight
 const parts : number = 4 
 const scGap : number = 0.02 / parts 
 const strokeFactor : number = 90
-const sizeFactor : number = 6.9 
+const sizeFactor : number = 14.9 
 const delay : number = 20
 const colors : Array<string> = ["#3F51B5", "#4CAF50", "#2196F3", "#F44336", "#FF5722"]
 const deg : number = Math.PI / 2 
@@ -27,6 +27,9 @@ class ScaleUtil {
 class DrawingUtil {
 
     static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        if (x1 == x2 && y1 == y2) {
+            return
+        }
         context.beginPath()
         context.moveTo(x1, y1)
         context.lineTo(x2, y2)
@@ -66,6 +69,7 @@ class DrawingUtil {
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h)  / strokeFactor 
         context.strokeStyle = colors[i]
+        context.fillStyle = colors[i]
         DrawingUtil.drawTranslatorPath(context, scale)
     }
 }
@@ -90,9 +94,11 @@ class Stage {
     }
 
     handleTap() {
-        this.renderer.handleTap(() => {
-            this.render()
-        })
+        this.canvas.onmousedown = () => {
+            this.renderer.handleTap(() => {
+                this.render()
+            })
+        }
     }
 
     static init() {
@@ -158,7 +164,7 @@ class BTPNode {
     }
 
     addNeighbor() {
-        if (this.i < colors.length) {
+        if (this.i < colors.length - 1) {
             this.next = new BTPNode(this.i + 1)
             this.next.prev = this 
         }
