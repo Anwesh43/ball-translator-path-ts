@@ -207,3 +207,25 @@ class BallTranslatorPath {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    animator : Animator = new Animator()
+    btp : BallTranslatorPath = new BallTranslatorPath()
+
+    render(context : CanvasRenderingContext2D) {
+        this.btp.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.btp.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.btp.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
