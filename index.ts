@@ -6,6 +6,7 @@ const strokeFactor : number = 90
 const sizeFactor : number = 6.9 
 const delay : number = 20
 const colors : Array<string> = ["#3F51B5", "#4CAF50", "#2196F3", "#F44336", "#FF5722"]
+const deg : number = Math.PI / 2 
 
 class ScaleUtil {
 
@@ -19,5 +20,51 @@ class ScaleUtil {
 
     static sinify(scale : number) : number {
         return Math.sin(scale * Math.PI)
+    }
+}
+
+class DrawingUtil {
+
+    static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
+
+    static drawCircle(context : CanvasRenderingContext2D, x : number, y : number, r : number) {
+        context.beginPath()
+        context.arc(x, y, r, 0, 2 * Math.PI)
+        context.fill()
+    }
+
+    static drawTranslatorPath(context : CanvasRenderingContext2D, scale : number) {
+        const sf : number = ScaleUtil.sinify(scale)
+        const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
+        const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
+        const sf3 : number = ScaleUtil.divideScale(sf, 2, parts)
+        const sf4 : number = ScaleUtil.divideScale(sf, 3, parts)
+        const r : number = Math.min(w, h) / sizeFactor 
+        const gap : number = (w / 2 - h / 2) * sf2 
+        context.save()
+        context.translate(w / 2, h / 2)
+        for (var j = 0; j < 2; j++) {
+            context.save()
+            context.scale(1 - 2 * j, 1)
+            context.save()
+            context.rotate(-deg * sf2)
+            DrawingUtil.drawLine(context, 0, 0, 0, (h / 2) * sf1 + gap)
+            context.restore()
+            DrawingUtil.drawCircle(context, (w / 2 - r) * sf4, -r, r * sf3)
+            context.restore()
+        }
+        context.restore()
+    }
+
+    static drawTPNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h)  / strokeFactor 
+        context.strokeStyle = colors[i]
+        DrawingUtil.drawTranslatorPath(context, scale)
     }
 }
