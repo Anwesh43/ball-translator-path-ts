@@ -7,6 +7,7 @@ const sizeFactor : number = 6.9
 const delay : number = 20
 const colors : Array<string> = ["#3F51B5", "#4CAF50", "#2196F3", "#F44336", "#FF5722"]
 const deg : number = Math.PI / 2 
+const backColor : string = "#bdbdbd"
 
 class ScaleUtil {
 
@@ -66,5 +67,34 @@ class DrawingUtil {
         context.lineWidth = Math.min(w, h)  / strokeFactor 
         context.strokeStyle = colors[i]
         DrawingUtil.drawTranslatorPath(context, scale)
+    }
+}
+
+class Stage {
+
+    canvas : HTMLCanvasElement = document.createElement('canvas')
+    context : CanvasRenderingContext2D 
+
+    initStage() {
+        this.canvas.width = w 
+        this.canvas.height = h 
+        this.context = this.canvas.getContext('2d')
+        document.body.appendChild(this.canvas)
+    }
+
+    render() {
+        this.context.fillStyle = backColor 
+        this.context.fillRect(0, 0, w, h)
+    }
+
+    handleTap() {
+
+    }
+
+    static init() {
+        const stage : Stage = new Stage()
+        stage.initStage()
+        stage.render()
+        stage.handleTap()
     }
 }
